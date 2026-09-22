@@ -1,0 +1,25 @@
+### GET /
+GET http://localhost:8383/health
+
+### GET /api/items
+GET http://localhost:8383/api/items
+
+### POST /api/items
+POST http://localhost:8383/api/items
+Content-Type: application/json
+
+{
+    "name": "test one",
+    "value": "test two"
+}
+
+### PUT /api/items/:id
+PUT http://localhost:8383/api/items/2
+Content-Type: application/json
+
+{
+    "value": "test update"
+}
+
+### DELETE /api/items/:id
+DELETE http://localhost:8383/api/items/1
