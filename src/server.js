@@ -31,8 +31,8 @@ app.put("/api/items/:id", (req, res) => {
     const query_id = req.params.id;
     data = data.map(val => {
         if (val.id === +query_id) {
-            val.name = req?.body?.name || val.name;
-            val.value = req?.body?.value || val.value;
+            val.name = req?.body?.name ?? val.name;
+            val.value = req?.body?.value ?? val.value;
         }
         return val;
     })
