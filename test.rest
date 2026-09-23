@@ -1,25 +1,48 @@
 ### GET /
 GET http://localhost:8383/health
 
-### GET /api/items
-GET http://localhost:8383/api/items
-
-### POST /api/items
-POST http://localhost:8383/api/items
+### POST /auth/register
+POST http://localhost:8383/auth/register
 Content-Type: application/json
 
 {
-    "name": "test one",
-    "value": "test two"
+    "username": "test@test.mail",
+    "password": "test@321"
 }
 
-### PUT /api/items/:id
-PUT http://localhost:8383/api/items/2
+
+### POST /auth/login
+POST http://localhost:8383/auth/login
 Content-Type: application/json
 
 {
-    "value": "test update"
+    "username": "test@test.mail",
+    "password": "test@321"
 }
 
-### DELETE /api/items/:id
-DELETE http://localhost:8383/api/items/1
+# Replace the token below with the fresh token returned by the login request.
+### GET
+GET http://localhost:8383/todos
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzkwMTQ5MTI1LCJleHAiOjE3OTAyMzU1MjV9.QojztO_2kNhaWyIeO5zCkS14lJr6UU2kBGKQpc6LUiM
+
+### POST
+POST http://localhost:8383/todos
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzkwMTQ5MTI1LCJleHAiOjE3OTAyMzU1MjV9.QojztO_2kNhaWyIeO5zCkS14lJr6UU2kBGKQpc6LUiM
+Content-Type: application/json
+
+{
+    "task": "added new task"
+}
+
+### PUT
+PUT http://localhost:8383/todos/2
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzkwMTQ5MTI1LCJleHAiOjE3OTAyMzU1MjV9.QojztO_2kNhaWyIeO5zCkS14lJr6UU2kBGKQpc6LUiM
+Content-Type: application/json
+
+{
+    "status": 1
+}
+
+### DELETE
+DELETE http://localhost:8383/todos/2
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzkwMTQ5MTI1LCJleHAiOjE3OTAyMzU1MjV9.QojztO_2kNhaWyIeO5zCkS14lJr6UU2kBGKQpc6LUiM

@@ -1,50 +1,38 @@
-const express = require("express");
+import express from 'express';
+import path, { dirname } from 'path';
+import  { fileURLToPath } from 'url';
+
+import authRoutes from "./routes/auth_routes.js";
+import todoRoutes from "./routes/todo_routes.js";
+import { authMiddleware } from './middlewares/auth_middleware.js';
+
 const app = express();
-const PORT = 8383;
+// Allow the port to be configured through the environment, including Docker.
+const PORT = process.env.PORT || 8383;
 
-let data = [
-  {
-    id: 1,
-    name: "test",
-    value: "test",
-  },
-];
+// ES modules do not provide __dirname, so derive it from import.meta.url.
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
+// Parse JSON request bodies before they reach the route handlers.
 app.use(express.json());
+// Serve the frontend files from the project's public directory.
+app.use(express.static(path.join(__dirname, '../public')));
+
+// Authentication routes are public; todo routes require a valid token.
+app.use("/auth", authRoutes);
+app.use("/todos", authMiddleware, todoRoutes);
+
+// The static middleware serves the frontend entry point at /.
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'))
+});
 
 app.get("/health", (req, res) => {
-  res.send("Node Backend app begins!");
+  res.send("App is up and running!")
 });
 
-app.get("/api/items", (req, res) => {
-  res.status(200).json(data);
-});
-
-app.post("/api/items", (req, res) => {
-  const new_data = req.body;
-  new_data["id"] = data.length + 1;
-  data.push(new_data);
-  res.status(201).send(new_data);
-});
-
-app.put("/api/items/:id", (req, res) => {
-  const query_id = req.params.id;
-  data = data.map((val) => {
-    if (val.id === +query_id) {
-      val.name = req?.body?.name ?? val.name;
-      val.value = req?.body?.value ?? val.value;
-    }
-    return val;
-  });
-  res.status(200).send(data);
-});
-
-app.delete("/api/items/:id", (req, res) => {
-  const query_id = req.params.id;
-  res.status(204);
-});
-
-// URL : http://localhost:8383
+// Listen on all interfaces so the app is reachable from a Docker port mapping.
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`App connected on port: ${PORT}`);
 });
