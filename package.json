@@ -1,22 +1,27 @@
 {
   "name": "node-backend-app",
   "version": "1.0.0",
-  "description": "a simple node backend app",
+  "description": "A simple Node.js backend API using PostgreSQL, Prisma ORM, JWT authentication, and Docker containerization.",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "node --watch --env-file=.env --experimental-strip-types --experimental-sqlite src/server.js",
+    "dev": "node --watch --env-file=.env --experimental-strip-types src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "^7.10.0",
     "bcryptjs": "^3.0.3",
+    "dotenv": "^18.0.3",
     "express": "^5.2.1",
-    "jsonwebtoken": "^9.0.3"
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.23.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "prisma": "^7.10.0"
   }
 }

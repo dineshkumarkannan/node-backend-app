@@ -1,48 +1,61 @@
 import express from "express";
-import db from "../db.js";
+import prisma from "../prismaClient.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   // Only return todos belonging to the authenticated user.
-  const getTodos = db.prepare(`SELECT * FROM todos WHERE user_id = ?`);
-  const todos = getTodos.all(req.userId);
+  const todos = await prisma.todos.findMany({
+    where: {
+      user_id: req.userId
+    }
+  })
+
   res.json(todos);
 });
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   const { task } = req.body;
-
   // Store the authenticated user's ID with every new todo.
-  const insertTodo = db.prepare(
-    `INSERT INTO todos (user_id, task) VALUES (?, ?)`,
-  );
-  const result = insertTodo.run(req.userId, task);
-  res.status(201).json({ id: result.lastInsertRowid, task, completed: 0 });
+  const todo = await prisma.todos.create({
+    data: {
+      task,
+      user_id: req.userId
+    }
+  })
+  res.status(201).json(todo);
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", async(req, res) => {
   const { id } = req.params;
   const { completed: status } = req.body;
   const { userId } = req;
-
   // The owner check prevents one user from changing another user's todo.
-  const updatedTodo = db.prepare(
-    `UPDATE todos SET status = ? WHERE id = ? AND user_id = ?`,
-  );
-  updatedTodo.run(status, id, userId);
-  res.json({ message: "update successfully" });
+
+  const updatedTodo = await prisma.todos.update({
+    where: {
+      id: parseInt(id),
+      user_id: userId
+    },
+    data: {
+      status: !!status
+    }
+  })
+
+  res.json(updatedTodo);
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", async (req, res) => {
   const { id } = req.params;
   const { userId } = req;
 
   // Delete only when both the todo ID and owner ID match.
-  const deletedTodo = db.prepare(
-    `DELETE FROM todos WHERE id = ? AND user_id = ?`
-  );
-  deletedTodo.run(id, userId);
+  await prisma.todos.delete({
+     where: {
+      id: parseInt(id),
+      user_id: userId
+    }
+  })
 
   res.json({ message: "task deleted successfully"})
 });

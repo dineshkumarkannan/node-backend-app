@@ -18,4 +18,4 @@ COPY public ./public
 EXPOSE 8383
 
 # SQLite is experimental in this Node version and needs this flag at startup.
-CMD ["node", "--experimental-sqlite", "src/server.js"]
+CMD ["node", "--experimental-strip-types", "src/server.js"]
